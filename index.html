@@ -3,6 +3,7 @@
 
 <head>
 	<meta charset="UTF-8" />
+	<link href='https://www.blogger.com/static/v1/widgets/55013136-widget_css_bundle.css' rel='stylesheet' type='text/css'/>
 	<meta content='width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0' name='viewport' />
 	<title>Drive Video Player</title>
 	<link rel="shortcut icon" href="https://www.youtube.com/s/desktop/ca23eea5/img/favicon_144x144.png"
@@ -35,6 +36,7 @@
 			right: 10px;
 		}
 	</style>
+	<script src="https://cdn.fluidplayer.com/v3/current/fluidplayer.min.js"></script>
 	<script>
 		/*<![CDATA[*/
 		var apikey = "AIzaSyCH4I2OxQnocrzdiZLeLOSI6GOnkuUR-yI"; //Your Drive Api Key
@@ -83,6 +85,43 @@
   const player = new Plyr('#player');  
   /*]]>*/
 </script>
+			<script>
+		var myFP = fluidPlayer(
+        'video',	{
+	"layoutControls": {
+		"controlBar": {
+			"autoHideTimeout": 3,
+			"animated": true,
+			"autoHide": true
+		},
+		"htmlOnPauseBlock": {
+			"html": '<button class=\"embed\" onclick=\"getembed()\">MovieSpyHD</button>\n',
+			"height": null,
+			"width": null
+		},
+		"autoPlay": true,
+		"mute": false,
+		"allowTheatre": false,
+		"playPauseAnimation": true,
+		"playbackRateEnabled": false,
+		"allowDownload": false,
+		"playButtonShowing": true,
+		"fillToContainer": false,
+		"posterImage": ""
+	},
+	"vastOptions": {
+		"adList": [{
+				"roll": "postRoll",
+				"vastTag": "https://groorsoa.net/4/3905812",
+				"adText": ""
+			}],
+		"adCTAText": false,
+		"adCTATextPosition": ""
+	}
+})
+
+	</script>
+	
 </body>
 
 </html>
