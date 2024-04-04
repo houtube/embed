@@ -42,7 +42,7 @@
 		var video = "";
 		var embed = "";
 
-		/* if (!getParameterByName('id') || getParameterByName('ib')) {
+		if (!getParameterByName('id') || getParameterByName('ib')) {
 			var eid = prompt('Enter Drive Video ID :- ');
 			embed = `
 <iframe width="560" height="315"
@@ -54,7 +54,7 @@ gyroscope; picture-in-picture" allowfullscreen>
           `;
 			prompt('Here is Your Embed Code :- ', embed);
 			window.location.href = window.location.href + '?id=' + eid;
-		} */
+		}
 		video = getParameterByName('id');
 		if (getParameterByName('ib')) {
 			video = btoa(getParameterByName('ib'));
