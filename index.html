@@ -2,91 +2,112 @@
 <html lang="en">
 
 <head>
-	<meta charset="UTF-8" />
-	<link href='https://www.blogger.com/static/v1/widgets/55013136-widget_css_bundle.css' rel='stylesheet' type='text/css'/>
-	<meta content='width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0' name='viewport' />
-	<title>Drive Video Player</title>
-	<link rel="shortcut icon" href="https://www.youtube.com/s/desktop/ca23eea5/img/favicon_144x144.png"
-		type="image/x-icon" />
+    <meta charset="UTF-8" />
+    <link href='https://www.blogger.com/static/v1/widgets/55013136-widget_css_bundle.css' rel='stylesheet' type='text/css'/>
+    <meta content='width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0' name='viewport' />
+    <title>Drive Video Player</title>
+    <link rel="shortcut icon" href="https://www.youtube.com/s/desktop/ca23eea5/img/favicon_144x144.png"
+        type="image/x-icon" />
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            height: 0;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            background-size: cover;
+            background-position: center;
+        }
+
+        #video-player {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .embed {
+            position: absolute;
+            background: none;
+            top: 2px;
+            z-index: 999;
+            color: aqua;
+            font-family: sans-serif;
+            font-size: 18px;
+            border: 0;
+            font-weight: 600;
+            right: 10px;
+        }
+    </style>
+    <script src="https://cdn.plyr.io/3.6.8/plyr.js"></script>
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.6.8/plyr.css" />
+    <script>
+        /*<![CDATA[*/
+        var apikey = "YOUR_DRIVE_API_KEY"; // Ganti dengan kunci API Drive Anda
+        var eid = "";
+        var video = "";
+
+        if (!getParameterByName('id') || getParameterByName('ib')) {
+            var eid = prompt('Masukkan URL Google Drive Anda di sini :- ');
+            window.location.href = window.location.href + '?id=' + eid;
+        }
+        video = getParameterByName('id');
+        if (getParameterByName('ib')) {
+            video = btoa(getParameterByName('ib'));
+        }
+
+        // Fungsi untuk mengambil thumbnail dari video menggunakan Google Drive API
+        function getVideoThumbnail(videoId, apiKey) {
+            var requestUrl = "https://www.googleapis.com/drive/v3/files/" + videoId + "?fields=thumbnailLink&key=" + apiKey;
+
+            // Melakukan permintaan HTTP untuk mendapatkan thumbnailLink dari Google Drive API
+            fetch(requestUrl)
+                .then(response => response.json())
+                .then(data => {
+                    // Mengambil URL gambar thumbnail dari respons API
+                    var thumbnailUrl = data.thumbnailLink;
+
+                    // Menyimpan URL gambar thumbnail ke dalam tag meta untuk gambar thumbnail
+                    document.querySelector('meta[property="og:image"]').setAttribute('content', thumbnailUrl);
+
+                    // Menampilkan gambar thumbnail sebagai latar belakang dari tag div video-container
+                    document.querySelector('.video-container').style.backgroundImage = "url('" + thumbnailUrl + "')";
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        // Panggil fungsi untuk mendapatkan thumbnail saat halaman dimuat
+        window.onload = function () {
+            // Ganti 'video' dengan ID video yang ingin Anda dapatkan thumbnail-nya
+            // Ganti 'apikey' dengan API key Anda
+            getVideoThumbnail(video, apikey);
+
+            // Inisialisasi Plyr untuk pemutaran video
+            const player = new Plyr('#video-player');
+        };
+
+        // Fungsi untuk mendapatkan nilai parameter dari URL
+        function getParameterByName(name, url = window.location.href) {
+            name = name.replace(/[\[\]]/g, '\\$&');
+            var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, ' '));
+        }
+        /*]]>*/
+    </script>
 </head>
 
 <body>
-	<style>
-		body {
-			padding: 0;
-			margin: 0;
-		}
-
-		video {
-			background: black;
-			width: 100%;
-			max-width: 100%;
-			height: 100%;
-			max-height: 100%;
-			position: absolute;
-		}
-
-		.embed {
-			position: absolute;
-			background: none;
-			top: 2px;
-			z-index: 999;
-			color: aqua;
-			font-family: sans-serif;
-			font-size: 18px;
-			border: 0;
-			font-weight: 600;
-			right: 10px;
-		}
-	</style>
-	<script src="https://cdn.fluidplayer.com/v3/current/fluidplayer.min.js"></script>
-	<script>
-		/*<![CDATA[*/
-		var apikey = "AIzaSyA8NOaenJCeGNOPCADY9YvOgHVlP_pP0Pw"; //Your Drive Api Key
-		var eid = "";
-		var video = "";
-		var embed = "";
-
-		if (!getParameterByName('id') || getParameterByName('ib')) {
-			var eid = prompt('URL DRIVE DISINI YA :- ');
-			embed = `
-<iframe allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' allowfullscreen='true' frameborder='0' height='100%' scrolling='no' src='${location.href}?id=${eid}' width='100%'></iframe>
-          `;
-			prompt('Success, please take URL embed :- ', embed);
-			window.location.href = window.location.href + '?id=' + eid;
-		}
-		video = getParameterByName('id');
-		if (getParameterByName('ib')) {
-			video = btoa(getParameterByName('ib'));
-		}
-		var vidurl = "https://www.googleapis.com/drive/v3/files/" + video + "?alt=media&key=" + apikey;
-		console.log(vidurl)
-		document.write("<video controls crossorigin playsinline class='js-player' data-poster='' id='player' src='" + vidurl +
-			"'></video>");
-
-
-		function getembed() {
-			var code = `
-<iframe allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' allowfullscreen='true' frameborder='0' height='100%' scrolling='no' src='${location.href}?id=${video}' width='100%'></iframe>
-          `;
-			prompt('Here is Your Embed Code :- ', code);
-		}
-
-		function getParameterByName(name, url = window.location.href) {
-			name = name.replace(/[\[\]]/g, '\\$&');
-			var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
-				results = regex.exec(url);
-			if (!results) return null;
-			if (!results[2]) return '';
-			return decodeURIComponent(results[2].replace(/\+/g, ' '));
-		}
-		/*]]>*/
-	</script>
-	<script src='path/to/plyr.js'></script>
-	<script>
-   /*<![CDATA[*/
-  const player = new Plyr('#player');  
-  /*]]>*/
-</script>
+    <div class="video-container">
+        <video id="video-player" controls crossorigin playsinline class="js-player" data-poster=""></video>
+    </div>
 </body>
+
 </html>
