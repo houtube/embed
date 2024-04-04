@@ -100,6 +100,14 @@
             if (!results[2]) return '';
             return decodeURIComponent(results[2].replace(/\+/g, ' '));
         }
+
+        // Fungsi untuk menampilkan embed code
+        function getembed() {
+            var code = `
+<iframe allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' allowfullscreen='true' frameborder='0' height='100%' scrolling='no' src='${location.href}?id=${video}' width='100%'></iframe>
+          `;
+            prompt('Here is Your Embed Code :- ', code);
+        }
         /*]]>*/
     </script>
 </head>
@@ -108,6 +116,8 @@
     <div class="video-container">
         <video id="video-player" controls crossorigin playsinline class="js-player" data-poster=""></video>
     </div>
+    <!-- Tombol untuk mendapatkan embed code -->
+    <button class="embed" onclick="getembed()">Get Embed Code</button>
 </body>
 
 </html>
