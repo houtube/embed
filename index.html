@@ -42,28 +42,11 @@
 		var video = "";
 		var embed = "";
 
-		// Fungsi untuk mengambil gambar thumbnail dari video menggunakan Google Drive API
-		function getVideoThumbnail(videoId, apiKey) {
-			var requestUrl = "https://www.googleapis.com/drive/v3/files/" + videoId + "?fields=thumbnailLink&key=" + apiKey;
-
-			// Melakukan permintaan HTTP untuk mendapatkan thumbnailLink dari Google Drive API
-			fetch(requestUrl)
-				.then(response => response.json())
-				.then(data => {
-					// Mengambil URL gambar thumbnail dari respons API
-					var thumbnailUrl = data.thumbnailLink;
-
-					// Menyimpan URL gambar thumbnail ke dalam tag meta
-					document.querySelector('meta[property="og:image"]').setAttribute('content', thumbnailUrl);
-				})
-				.catch(error => console.error('Error:', error));
-		}
-
 		if (!getParameterByName('id') || getParameterByName('ib')) {
 			var eid = prompt('URL DRIVE DISINI YA :- ');
 			embed = `
-		<iframe allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' allowfullscreen='true' frameborder='0' height='100%' scrolling='no' src='${location.href}?id=${eid}' width='100%'></iframe>
-			`;
+<iframe allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' allowfullscreen='true' frameborder='0' height='100%' scrolling='no' src='${location.href}?id=${eid}' width='100%'></iframe>
+          `;
 			prompt('Success, please take URL embed :- ', embed);
 			window.location.href = window.location.href + '?id=' + eid;
 		}
@@ -76,21 +59,30 @@
 		document.write("<video controls crossorigin playsinline class='js-player' data-poster='' id='player' src='" + vidurl +
 			"'></video>");
 
-		// Panggil fungsi untuk mendapatkan thumbnail saat halaman dimuat
-		window.onload = function () {
-			// Ganti 'video' dengan ID video yang ingin Anda dapatkan thumbnail-nya
-			// Ganti 'apikey' dengan API key Anda
-			getVideoThumbnail(video, apikey);
-		};
+
+		function getembed() {
+			var code = `
+<iframe allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' allowfullscreen='true' frameborder='0' height='100%' scrolling='no' src='${location.href}?id=${video}' width='100%'></iframe>
+          `;
+			prompt('Here is Your Embed Code :- ', code);
+		}
+
+		function getParameterByName(name, url = window.location.href) {
+			name = name.replace(/[\[\]]/g, '\\$&');
+			var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+				results = regex.exec(url);
+			if (!results) return null;
+			if (!results[2]) return '';
+			return decodeURIComponent(results[2].replace(/\+/g, ' '));
+		}
 		/*]]>*/
 	</script>
 	<script src='path/to/plyr.js'></script>
 	<script>
-		/*<![CDATA[*/
-		const player = new Plyr('#player');
-		/*]]>*/
-	</script>
-
+   /*<![CDATA[*/
+  const player = new Plyr('#player');  
+  /*]]>*/
+</script>
 </body>
 
 </html>
