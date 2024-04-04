@@ -44,25 +44,21 @@
             right: 10px;
         }
     </style>
-    <script src="https://cdn.plyr.io/3.6.8/plyr.js"></script>
-    <link rel="stylesheet" href="https://cdn.plyr.io/3.6.8/plyr.css" />
+    <!-- Fluid Player Library -->
+    <script src="https://cdn.fluidplayer.com/v3/current/fluidplayer.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.fluidplayer.com/v3/current/fluidplayer.min.css" type="text/css" />
+
     <script>
         /*<![CDATA[*/
         var apikey = "AIzaSyA8NOaenJCeGNOPCADY9YvOgHVlP_pP0Pw"; // Ganti dengan kunci API Drive Anda
-        var eid = "";
         var video = "";
 
-        if (!getParameterByName('id') || getParameterByName('ib')) {
-            var eid = prompt('Masukkan URL Google Drive Anda di sini :- ');
-            window.location.href = window.location.href + '?id=' + eid;
-        }
+        // Dapatkan ID video dari URL
         video = getParameterByName('id');
-        if (getParameterByName('ib')) {
-            video = btoa(getParameterByName('ib'));
-        }
 
         // Fungsi untuk mengambil thumbnail dari video menggunakan Google Drive API
-        function getVideoThumbnail(videoId, apiKey) {
+        function getVideoThumbnail(videoId, callback) {
+            var apiKey = "AIzaSyA8NOaenJCeGNOPCADY9YvOgHVlP_pP0Pw";
             var requestUrl = "https://www.googleapis.com/drive/v3/files/" + videoId + "?fields=thumbnailLink&key=" + apiKey;
 
             // Melakukan permintaan HTTP untuk mendapatkan thumbnailLink dari Google Drive API
@@ -72,23 +68,27 @@
                     // Mengambil URL gambar thumbnail dari respons API
                     var thumbnailUrl = data.thumbnailLink;
 
-                    // Menyimpan URL gambar thumbnail ke dalam tag meta untuk gambar thumbnail
-                    document.querySelector('meta[property="og:image"]').setAttribute('content', thumbnailUrl);
-
-                    // Menampilkan gambar thumbnail sebagai latar belakang dari tag div video-container
-                    document.querySelector('.video-container').style.backgroundImage = "url('" + thumbnailUrl + "')";
+                    // Panggil fungsi callback dengan URL gambar thumbnail
+                    callback(thumbnailUrl);
                 })
                 .catch(error => console.error('Error:', error));
         }
 
         // Panggil fungsi untuk mendapatkan thumbnail saat halaman dimuat
         window.onload = function () {
-            // Ganti 'video' dengan ID video yang ingin Anda dapatkan thumbnail-nya
-            // Ganti 'apikey' dengan API key Anda
-            getVideoThumbnail(video, apikey);
+            // Inisialisasi Fluid Player untuk pemutaran video
+            fluidPlayer('video-player', {
+                layoutControls: {
+                    primaryColor: '#4a90e2',
+                    posterImage: '' // Poster image will be set automatically after fetching the thumbnail
+                }
+            });
 
-            // Inisialisasi Plyr untuk pemutaran video
-            const player = new Plyr('#video-player');
+            // Dapatkan thumbnail dan set sebagai poster image untuk video
+            getVideoThumbnail(video, function(thumbnailUrl) {
+                // Set thumbnailUrl sebagai poster image untuk video player
+                document.querySelector('.fluid_controls_container').style.backgroundImage = "url('" + thumbnailUrl + "')";
+            });
         };
 
         // Fungsi untuk mendapatkan nilai parameter dari URL
@@ -114,7 +114,8 @@
 
 <body>
     <div class="video-container">
-        <video id="video-player" controls crossorigin playsinline class="js-player" data-poster=""></video>
+        <!-- Penanda untuk video yang akan dimuat oleh Fluid Player -->
+        <video id="video-player" crossorigin class="js-player"></video>
     </div>
     <!-- Tombol untuk mendapatkan embed code -->
     <button class="embed" onclick="getembed()">Get Embed Code</button>
